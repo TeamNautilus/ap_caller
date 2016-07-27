@@ -6,10 +6,9 @@ Gem::Specification.new do |s|
   s.summary               = 'Call api safely.'
   s.version               = '0.0.1'
   s.email                 = 'nautilus@trovaprezzi.it'
-  s.homepage              = 'https://github.com/MauroQuaglia/numeris_romanis'
-  s.date                  = '2016-02-14'
-  s.description           = "Converts decimal into roman and vice versa. The ranges permitted are [1, 3999] and [I, MMMCMXCIX]."
+  s.homepage              = 'https://github.com/TeamNautilus/api_caller'
+  s.date                  = '2016-07-27'
+  s.description           = 'Call api safely for get o post method.'
   s.license               = 'MIT'
-  s.required_ruby_version = '>= 2.0.0'
-  s.post_install_message  = "Thanks for installing numeris_romanis gem!"
+  s.required_ruby_version = '>= 2.3.0'
 end
