@@ -1,5 +1,5 @@
 # api_caller
-Call API safely
+Call API safely.
 
 # Usage
 ```ruby
