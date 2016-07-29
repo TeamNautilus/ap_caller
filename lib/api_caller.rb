@@ -19,21 +19,45 @@ class ApiCaller
   end
 
   def self.post(uri_string:, params:, content_type: nil, logger: nil)
+    if content_type
+      body_params_post(uri_string: uri_string, params: params, content_type: content_type, logger: logger)
+    else
+      url_params_post(uri_string: uri_string, params: params, logger: logger)
+    end
+  end
+
+  private
+
+  def self.url_params_post(uri_string:, params:, logger: nil)
     response = nil
 
     uri = URI(uri_string)
     begin
       Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
-        request = content_type ? Net::HTTP::Post.new(uri, content_type) : Net::HTTP::Post.new(uri)
-        request.body = params
-        response = http.request(request)
+        request = Net::HTTP::Post.new(uri)
+        post_data = URI.encode_www_form(params)
+        response = http.request(request, post_data)
+        response.body
       end
     rescue Exception => e
       logger.error("[API FAIL] - URI: [#{uri_string}] - Message: #{e.message}\n #{e.backtrace.join("\n ")}") if logger
     end
-
-    response
   end
 
+  def self.body_params_post(uri_string:, params:, content_type: nil, logger: nil)
+    response = nil
+
+    uri = URI(uri_string)
+    begin
+      Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
+        request = Net::HTTP::Post.new(uri, content_type)
+        request.body = params
+        response = http.request(request)
+        response.body
+      end
+    rescue Exception => e
+      logger.error("[API FAIL] - URI: [#{uri_string}] - Message: #{e.message}\n #{e.backtrace.join("\n ")}") if logger
+    end
+  end
 
 end

@@ -44,26 +44,28 @@ RSpec.describe ApiCaller do
 
   describe '.post' do
 
-    it 'should perform a json http post' do
-      request = OpenStruct.new(body: nil)
-      uri = URI('http://www.google.com/')
-      expect(Net::HTTP::Post).to receive(:new).with(uri, {'Content-Type' => 'application/json'}).and_return(request)
+    context 'params in body' do
+      it 'should perform a json http post' do
+        request = OpenStruct.new(body: nil)
+        uri = URI('http://www.google.com/')
+        expect(Net::HTTP::Post).to receive(:new).with(uri, {'Content-Type' => 'application/json'}).and_return(request)
 
-      described_class.post(uri_string: 'http://www.google.com/', params: '{"key": "value"}', content_type: {'Content-Type' => 'application/json'})
+        described_class.post(uri_string: 'http://www.google.com/', params: '{"key": "value"}', content_type: {'Content-Type' => 'application/json'})
 
-      expect(request.body).to eq('{"key": "value"}')
+        expect(request.body).to eq('{"key": "value"}')
+      end
     end
 
-    it 'should perform a standard http post' do
-      request = OpenStruct.new(body: 'request body')
-      uri = URI('http://www.google.com/')
-      expect(Net::HTTP::Post).to receive(:new).with(uri).and_return(request)
+    context 'params in url' do
+      it 'should perform a standard http post' do
+        request = double
+        uri = URI('http://www.google.com/')
+        expect(Net::HTTP::Post).to receive(:new).with(uri).and_return(request)
 
-      described_class.post(uri_string: 'http://www.google.com/', params: {key: "value"})
-
-      expect(request.body).to eq(:key => "value")
+        expect_any_instance_of(Net::HTTP).to receive(:request).with(request, 'key=value&key2=2')
+        described_class.post(uri_string: 'http://www.google.com/', params: {key: 'value', key2: 2})
+      end
     end
-
   end
 
 end
