@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name                  = 'api_caller'
   s.platform              = Gem::Platform::RUBY
   s.summary               = 'Call APIs safely.'
-  s.version               = '0.0.4'
+  s.version               = '0.0.5'
   s.email                 = 'nautilus@trovaprezzi.it'
   s.homepage              = 'https://github.com/TeamNautilus/api_caller'
   s.date                  = '2016-07-27'

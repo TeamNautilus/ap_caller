@@ -33,7 +33,7 @@ class ApiCaller
 
     uri = URI(uri_string)
     begin
-      Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
+      Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1, read_timeout: 1}) do |http|
         request = Net::HTTP::Post.new(uri)
         post_data = URI.encode_www_form(params)
         response = http.request(request, post_data)
@@ -49,7 +49,7 @@ class ApiCaller
 
     uri = URI(uri_string)
     begin
-      Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
+      Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1, read_timeout: 1}) do |http|
         request = Net::HTTP::Post.new(uri, content_type)
         request.body = params
         response = http.request(request)
