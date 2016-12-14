@@ -68,4 +68,15 @@ RSpec.describe ApiCaller do
     end
   end
 
+  describe '.delete' do
+
+    it 'should perform delete' do
+      uri = URI('http://www.google.com/drop_db/users')
+      expect(Net::HTTP::Delete).to receive(:new).with(uri)
+
+      described_class.delete(uri_string: uri)
+    end
+
+  end
+
 end
