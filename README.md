@@ -17,6 +17,11 @@ or with optional arguments
 ApiCaller.post(uri_string: 'www.my_api.com/v1/interesting_stuffs', params: '{"key": "value"}', content_type: {'Content-Type' => 'application/json'}, logger: Rails.logger)
 ```
 
+DELETE
+```ruby
+ApiCaller.delete(uri_string: 'www.my_api.com/v1/resource/to-delete', logger: Rails.logger)
+```
+
 # Install
 Edit your Gemfile and add:
 ```ruby
