@@ -12,9 +12,9 @@ RSpec.describe ApiCaller do
     end
 
     it 'should perform a https get' do
-      response = described_class.get(uri_string: 'https://rubygems.org')
+      response = described_class.get(uri_string: 'https://www.google.it/')
 
-      expect(response).to include('RubyGems')
+      expect(response).to include('Google')
     end
 
     it 'should return nil when resource is not available' do
@@ -40,6 +40,12 @@ RSpec.describe ApiCaller do
       expect(response).to be_nil
     end
 
+    it 'should escape url' do
+      expect(Net::HTTP).to receive(:start).with('url%20with%20spaces', any_args)
+
+      described_class.get(uri_string: 'http://url with spaces')
+    end
+
   end
 
   describe '.post' do
@@ -47,10 +53,11 @@ RSpec.describe ApiCaller do
     context 'params in body' do
       it 'should perform a json http post' do
         request = OpenStruct.new(body: nil)
-        uri = URI('http://www.google.com/')
-        expect(Net::HTTP::Post).to receive(:new).with(uri, {'Content-Type' => 'application/json'}).and_return(request)
+        uri_string = 'http://www.google.com/'
+        expect(Net::HTTP::Post).to receive(:new).with(URI(uri_string), {'Content-Type' => 'application/json'})
+                                       .and_return(request)
 
-        described_class.post(uri_string: 'http://www.google.com/', params: '{"key": "value"}', content_type: {'Content-Type' => 'application/json'})
+        described_class.post(uri_string: uri_string, params: '{"key": "value"}', content_type: {'Content-Type' => 'application/json'})
 
         expect(request.body).to eq('{"key": "value"}')
       end
@@ -59,11 +66,11 @@ RSpec.describe ApiCaller do
     context 'params in url' do
       it 'should perform a standard http post' do
         request = double
-        uri = URI('http://www.google.com/')
-        expect(Net::HTTP::Post).to receive(:new).with(uri).and_return(request)
+        uri_string = 'http://www.google.com/'
+        expect(Net::HTTP::Post).to receive(:new).with(URI(uri_string)).and_return(request)
 
         expect_any_instance_of(Net::HTTP).to receive(:request).with(request, 'key=value&key2=2')
-        described_class.post(uri_string: 'http://www.google.com/', params: {key: 'value', key2: 2})
+        described_class.post(uri_string: uri_string, params: {key: 'value', key2: 2})
       end
     end
   end
@@ -71,12 +78,18 @@ RSpec.describe ApiCaller do
   describe '.delete' do
 
     it 'should perform delete' do
-      uri = URI('http://www.google.com/drop_db/users')
-      expect(Net::HTTP::Delete).to receive(:new).with(uri)
+      uri_string = 'http://www.google.com/drop_db/users'
+      expect(Net::HTTP::Delete).to receive(:new).with(URI(uri_string))
 
-      described_class.delete(uri_string: uri)
+      described_class.delete(uri_string: uri_string)
     end
 
+  end
+
+  describe '.escaped_uri' do
+    it 'should escape url' do
+      expect(ApiCaller.send(:escaped_uri, 'http://url with spaces').host).to eq('url%20with%20spaces')
+    end
   end
 
 end

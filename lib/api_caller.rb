@@ -5,7 +5,8 @@ class ApiCaller
   def self.get(uri_string:, logger: nil)
     response = nil
 
-    uri = URI(uri_string)
+    uri = escaped_uri(uri_string)
+
     begin
       Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
         request = Net::HTTP::Get.new(uri)
@@ -29,7 +30,7 @@ class ApiCaller
   def self.delete(uri_string:, logger: nil)
     response = nil
 
-    uri = URI(uri_string)
+    uri = escaped_uri(uri_string)
     begin
       Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1}) do |http|
         request = Net::HTTP::Delete.new(uri)
@@ -44,10 +45,14 @@ class ApiCaller
 
   private
 
+  def self.escaped_uri(uri)
+    URI(URI.escape(uri))
+  end
+
   def self.url_params_post(uri_string:, params:, logger: nil)
     response = nil
 
-    uri = URI(uri_string)
+    uri = escaped_uri(uri_string)
     begin
       Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1, read_timeout: 1}) do |http|
         request = Net::HTTP::Post.new(uri)
@@ -63,7 +68,7 @@ class ApiCaller
   def self.body_params_post(uri_string:, params:, content_type: nil, logger: nil)
     response = nil
 
-    uri = URI(uri_string)
+    uri = escaped_uri(uri_string)
     begin
       Net::HTTP.start(uri.host, uri.port, {use_ssl: uri.scheme == 'https', open_timeout: 1, read_timeout: 1}) do |http|
         request = Net::HTTP::Post.new(uri, content_type)
