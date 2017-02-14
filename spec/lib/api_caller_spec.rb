@@ -46,6 +46,15 @@ RSpec.describe ApiCaller do
       described_class.get(uri_string: 'http://url with spaces')
     end
 
+    it 'should handle nil body' do
+      allow(Net::HTTP::Get).to receive(:new)
+      allow(Net::HTTP).to receive(:start).and_yield(double(request: double(body: nil, is_a?: true)))
+
+      response = described_class.get(uri_string: 'any_url')
+
+      expect(response).to be_nil
+    end
+
   end
 
   describe '.post' do
@@ -82,6 +91,15 @@ RSpec.describe ApiCaller do
       expect(Net::HTTP::Delete).to receive(:new).with(URI(uri_string))
 
       described_class.delete(uri_string: uri_string)
+    end
+
+    it 'should handle nil body' do
+      allow(Net::HTTP::Delete).to receive(:new)
+      allow(Net::HTTP).to receive(:start).and_yield(double(request: double(body: nil, is_a?: true)))
+
+      response = described_class.delete(uri_string: 'any_url')
+
+      expect(response).to be_nil
     end
 
   end

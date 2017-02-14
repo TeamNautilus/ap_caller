@@ -16,7 +16,7 @@ class ApiCaller
       logger.error("[API FAIL] - URI: [#{uri_string}] - Message: #{e.message}\n #{e.backtrace.join("\n ")}") if logger
     end
 
-    response.is_a?(Net::HTTPSuccess) ? response.body.force_encoding(Encoding::UTF_8) : nil
+    response.is_a?(Net::HTTPSuccess) ? response.body&.force_encoding(Encoding::UTF_8) : nil
   end
 
   def self.post(uri_string:, params:, content_type: nil, logger: nil)
@@ -40,7 +40,7 @@ class ApiCaller
       logger.error("[API FAIL] - URI: [#{uri_string}] - Message: #{e.message}\n #{e.backtrace.join("\n ")}") if logger
     end
 
-    response.is_a?(Net::HTTPSuccess) ? response.body.force_encoding(Encoding::UTF_8) : nil
+    response.is_a?(Net::HTTPSuccess) ? response.body&.force_encoding(Encoding::UTF_8) : nil
   end
 
   private
